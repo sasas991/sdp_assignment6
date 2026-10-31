@@ -5,7 +5,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 import java.util.concurrent.CopyOnWriteArrayList;
 import marketplace.Events.Event;
-import marketplace.Events.Subject;
 import marketplace.Events.Type;
 
 public final class MarketSource<E extends Event> implements Subject<E> {

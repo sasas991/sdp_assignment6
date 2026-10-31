@@ -74,14 +74,6 @@ public final class Events {
         }
     }
 
-    public interface Subject<E extends Event> {
-        void subscribe(Type type, Observer<? super E> observer);
-
-        void unsubscribe(Type type, Observer<? super E> observer);
-
-        void publish(E event);
-    }
-
     private static void requireId(String id) {
         if (id == null || id.isBlank()) {
             throw new IllegalArgumentException("Id cannot be blank");
