@@ -5,6 +5,7 @@ import java.util.Objects;
 import marketplace.catalog.Catalog;
 import marketplace.catalog.Category;
 import marketplace.catalog.DigitalProduct;
+import marketplace.catalog.GiftCard;
 import marketplace.catalog.PhysicalProduct;
 import marketplace.catalog.Product;
 import marketplace.catalog.ServiceProduct;
@@ -65,6 +66,11 @@ public final class CostVisitor implements Visitor<BigDecimal> {
     @Override
     public BigDecimal visit(ServiceProduct product) {
         return mode == Mode.TAX ? tax(product, SERVICE_TAX) : BigDecimal.ZERO;
+    }
+
+    @Override
+    public BigDecimal visit(GiftCard product) {
+        return BigDecimal.ZERO;
     }
 
     private static BigDecimal tax(Product product, BigDecimal rate) {

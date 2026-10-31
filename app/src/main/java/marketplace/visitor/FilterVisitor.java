@@ -7,6 +7,7 @@ import java.util.function.Predicate;
 import marketplace.catalog.Catalog;
 import marketplace.catalog.Category;
 import marketplace.catalog.DigitalProduct;
+import marketplace.catalog.GiftCard;
 import marketplace.catalog.PhysicalProduct;
 import marketplace.catalog.Product;
 import marketplace.catalog.ServiceProduct;
@@ -51,6 +52,11 @@ public final class FilterVisitor implements Visitor<List<Product>> {
 
     @Override
     public List<Product> visit(ServiceProduct product) {
+        return match(product);
+    }
+
+    @Override
+    public List<Product> visit(GiftCard product) {
         return match(product);
     }
 

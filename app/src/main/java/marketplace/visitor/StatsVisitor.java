@@ -3,6 +3,7 @@ package marketplace.visitor;
 import marketplace.catalog.Catalog;
 import marketplace.catalog.Category;
 import marketplace.catalog.DigitalProduct;
+import marketplace.catalog.GiftCard;
 import marketplace.catalog.PhysicalProduct;
 import marketplace.catalog.Product;
 import marketplace.catalog.ServiceProduct;
@@ -45,6 +46,11 @@ public final class StatsVisitor implements Visitor<StatsVisitor.Stats> {
 
     @Override
     public Stats visit(ServiceProduct product) {
+        return count(product);
+    }
+
+    @Override
+    public Stats visit(GiftCard product) {
         return count(product);
     }
 

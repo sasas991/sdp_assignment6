@@ -4,6 +4,7 @@ import marketplace.catalog.Catalog;
 import marketplace.catalog.CatalogElement;
 import marketplace.catalog.Category;
 import marketplace.catalog.DigitalProduct;
+import marketplace.catalog.GiftCard;
 import marketplace.catalog.PhysicalProduct;
 import marketplace.catalog.Product;
 import marketplace.catalog.ServiceProduct;
@@ -50,14 +51,23 @@ public final class XmlVisitor implements Visitor<String> {
                 Integer.toString(product.durationMinutes()));
     }
 
+    @Override
+    public String visit(GiftCard product) {
+        return productStart("giftCard", product).append("/>").toString();
+    }
+
     private static String productTag(String tag, Product product, String attribute,
             String value) {
-        return startTag(tag, product)
-                .append(" price=\"").append(product.price().toPlainString())
-                .append("\" quantity=\"").append(product.quantity())
-                .append("\" ").append(attribute).append("=\"").append(escape(value))
+        return productStart(tag, product)
+                .append(' ').append(attribute).append("=\"").append(escape(value))
                 .append("\"/>")
                 .toString();
+    }
+
+    private static StringBuilder productStart(String tag, Product product) {
+        return startTag(tag, product)
+                .append(" price=\"").append(product.price().toPlainString())
+                .append("\" quantity=\"").append(product.quantity()).append('"');
     }
 
     private static StringBuilder startTag(String tag, CatalogElement element) {
