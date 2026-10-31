@@ -74,11 +74,6 @@ public final class Events {
         }
     }
 
-    @FunctionalInterface
-    public interface Observer<E extends Event> {
-        void onEvent(E event);
-    }
-
     public interface Subject<E extends Event> {
         void subscribe(Type type, Observer<? super E> observer);
 
