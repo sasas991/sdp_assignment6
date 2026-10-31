@@ -2,8 +2,9 @@ package marketplace.catalog;
 
 import java.util.List;
 import java.util.Objects;
+import marketplace.visitor.Visitor;
 
-public final class Category {
+public final class Category implements CatalogElement {
     private final String id;
     private final String name;
     private final List<Category> subcategories;
@@ -34,5 +35,10 @@ public final class Category {
 
     public List<Product> products() {
         return products;
+    }
+
+    @Override
+    public <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
     }
 }
