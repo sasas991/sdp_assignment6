@@ -28,17 +28,19 @@ public final class CategoryReportService
             throw new IllegalArgumentException("Unknown category: " + event.categoryId());
         }
 
-        var products = category.accept(new FilterVisitor(
-                product -> product.id().equals(event.productId())));
-        if (products.size() != 1) {
-            throw new IllegalArgumentException("Product must appear once in category: "
-                    + event.productId());
-        }
+        synchronized (category) {
+            var products = category.accept(new FilterVisitor(
+                    product -> product.id().equals(event.productId())));
+            if (products.size() != 1) {
+                throw new IllegalArgumentException("Product must appear once in category: "
+                        + event.productId());
+            }
 
-        products.get(0).updateQuantity(event.newQuantity());
-        var stats = category.accept(new StatsVisitor());
-        publish(new CategoryReportReady(category.id(), stats.productCount(),
-                stats.totalStock()));
+            products.get(0).updateQuantity(event.newQuantity());
+            var stats = category.accept(new StatsVisitor());
+            publish(new CategoryReportReady(category.id(), stats.productCount(),
+                    stats.totalStock()));
+        }
     }
 
     @Override
