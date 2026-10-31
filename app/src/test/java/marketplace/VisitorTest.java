@@ -1,18 +1,25 @@
 package marketplace;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import java.io.StringReader;
 import java.math.BigDecimal;
 import java.util.List;
+import javax.xml.parsers.DocumentBuilderFactory;
 import marketplace.catalog.Catalog;
 import marketplace.catalog.Category;
 import marketplace.catalog.DigitalProduct;
 import marketplace.catalog.GiftCard;
 import marketplace.catalog.PhysicalProduct;
+import marketplace.catalog.Product;
 import marketplace.catalog.ServiceProduct;
 import marketplace.visitor.CostVisitor;
+import marketplace.visitor.FilterVisitor;
 import marketplace.visitor.StatsVisitor;
+import marketplace.visitor.XmlVisitor;
 import org.junit.jupiter.api.Test;
+import org.xml.sax.InputSource;
 
 class VisitorTest {
     @Test
@@ -34,6 +41,37 @@ class VisitorTest {
         var actual = catalog().accept(new StatsVisitor());
 
         assertEquals(new StatsVisitor.Stats(4, 10), actual);
+    }
+
+    @Test
+    void filtersProductsAcrossNestedCategories() {
+        var actual = catalog().accept(new FilterVisitor(product -> product.quantity() <= 2));
+
+        assertEquals(List.of("p1", "p3"), actual.stream().map(Product::id).toList());
+    }
+
+    @Test
+    void exportsNestedXmlWithEscapedAttributes() throws Exception {
+        var giftCard = new GiftCard("gift", "Card <VIP> & \"gold\"",
+                new BigDecimal("25"), 1);
+        var nested = new Category("nested", "Offers", List.of(), List.of(giftCard));
+        var parent = new Category("parent", "Main", List.of(nested), List.of());
+        var catalog = new Catalog("root", "Market & More", List.of(parent));
+
+        var xml = catalog.accept(new XmlVisitor());
+        var document = DocumentBuilderFactory.newInstance().newDocumentBuilder()
+                .parse(new InputSource(new StringReader(xml)));
+        var root = document.getDocumentElement();
+        var categories = root.getElementsByTagName("category");
+        var products = root.getElementsByTagName("giftCard");
+
+        assertEquals("catalog", root.getTagName());
+        assertEquals("Market & More", root.getAttribute("name"));
+        assertEquals(2, categories.getLength());
+        assertEquals(1, products.getLength());
+        assertEquals("Card <VIP> & \"gold\"",
+                products.item(0).getAttributes().getNamedItem("name").getNodeValue());
+        assertTrue(products.item(0).getParentNode().isSameNode(categories.item(1)));
     }
 
     private static Catalog catalog() {
