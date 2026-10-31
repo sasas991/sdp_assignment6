@@ -1,6 +1,7 @@
 package marketplace.catalog;
 
 import java.math.BigDecimal;
+import marketplace.visitor.Visitor;
 
 public final class PhysicalProduct extends Product {
     private final BigDecimal weightKg;
@@ -16,5 +17,10 @@ public final class PhysicalProduct extends Product {
 
     public BigDecimal weightKg() {
         return weightKg;
+    }
+
+    @Override
+    public <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
     }
 }

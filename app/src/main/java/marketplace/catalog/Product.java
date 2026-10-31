@@ -3,8 +3,9 @@ package marketplace.catalog;
 import java.math.BigDecimal;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.atomic.AtomicReference;
+import marketplace.visitor.Visitor;
 
-public abstract class Product {
+public abstract class Product implements CatalogElement {
     private final String id;
     private final String name;
     private final AtomicReference<BigDecimal> price;
@@ -16,6 +17,9 @@ public abstract class Product {
         this.price = new AtomicReference<>(requirePrice(price));
         this.quantity = new AtomicInteger(requireQuantity(quantity));
     }
+
+    @Override
+    public abstract <R> R accept(Visitor<R> visitor);
 
     public String id() {
         return id;

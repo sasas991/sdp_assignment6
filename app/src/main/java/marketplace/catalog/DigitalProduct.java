@@ -1,6 +1,7 @@
 package marketplace.catalog;
 
 import java.math.BigDecimal;
+import marketplace.visitor.Visitor;
 
 public final class DigitalProduct extends Product {
     private final long downloadSizeBytes;
@@ -16,5 +17,10 @@ public final class DigitalProduct extends Product {
 
     public long downloadSizeBytes() {
         return downloadSizeBytes;
+    }
+
+    @Override
+    public <R> R accept(Visitor<R> visitor) {
+        return visitor.visit(this);
     }
 }
